@@ -52,7 +52,7 @@
         .btn-container { display: flex; justify-content: space-around; width: 100%; position: relative; height: 60px; margin-top: 20px; }
         .yes-btn, .no-btn { padding: 10px 30px; font-size: 18px; border-radius: 25px; border: none; font-weight: bold; color: white; cursor: pointer; }
         .yes-btn { background: #ff4d6d; }
-        .no-btn { background: #888; position: absolute; transition: top 0.3s, left 0.3s; }
+        .no-btn { background: #888; transition: top 0.3s, left 0.3s; }
 
         /* Calendar & Time inputs */
         input[type="date"], input[type="time"] { width: 100%; padding: 10px; margin: 10px 0; border: 2px solid #ffb3c6; border-radius: 10px; font-family: inherit; font-size: 16px; outline: none; }
@@ -236,19 +236,46 @@
         }
 
         // Catch me if you can - NO Button logic
-        function moveNo() {
+                function moveNo() {
             let btn = document.getElementById('noBtn');
             let box = document.getElementById('btn-box');
+            let yesBtn = document.querySelector('.yes-btn');
             
-            let maxX = box.clientWidth - btn.clientWidth;
-            let maxY = 150; // area to move around
+            // Buttons ki position absolute kar dein takay start mein theek rahein aur baad mein move hon
+            btn.style.position = 'absolute';
+
+            // Area calculation
+            let maxX = window.innerWidth - btn.clientWidth - 40; // Screen ki width
+            let maxY = window.innerHeight - btn.clientHeight - 100; // Screen ki height
             
-            let randomX = Math.floor(Math.random() * maxX);
-            let randomY = Math.floor(Math.random() * maxY) - 100; // move up
+            // Yes button ki current jagah ka pata lagana
+            let yesRect = yesBtn.getBoundingClientRect();
+            
+            let randomX, randomY;
+            let overlap = true;
+
+            // Jab tak No button Yes button ke upar aaye, naye coordinates dhoondta rahe
+            while(overlap) {
+                randomX = Math.floor(Math.random() * maxX);
+                // Thora upar ki taraf move karne ke liye Y axis set kiya
+                randomY = Math.floor(Math.random() * maxY) - (window.innerHeight / 2) + 100; 
+
+                // Check karna ke kya Naye X,Y 'Yes' button ke area mein toh nahi aa rahe?
+                // Thora sa buffer (50px) rakha hai takay bilkul sath na jurey
+                if(
+                    randomX + btn.clientWidth < yesRect.left - 50 || 
+                    randomX > yesRect.right + 50 || 
+                    randomY + btn.clientHeight < yesRect.top - 50 || 
+                    randomY > yesRect.bottom + 50
+                ) {
+                    overlap = false; // Safe jagah mil gayi!
+                }
+            }
             
             btn.style.left = randomX + 'px';
             btn.style.top = randomY + 'px';
         }
+
 
         // Submit Date & Time
         function submitDate() {
