@@ -3,139 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Birthday Mano ❤️</title>
+    <title>Happy Birthday My Princess ❤️</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Caveat:wght@600&display=swap');
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; background-color: #ffe6ea; color: #333; text-align: center; overflow-x: hidden; }
+        body { font-family: 'Poppins', sans-serif; background-color: #ffe6ea; color: #333; text-align: center; overflow-x: hidden; touch-action: manipulation; }
         
-        .screen { display: none; padding: 20px; min-height: 100vh; flex-direction: column; justify-content: center; align-items: center; }
+        .screen { display: none; padding: 20px; min-height: 100vh; flex-direction: column; justify-content: center; align-items: center; position: relative; }
         .active { display: flex; animation: fadeIn 1s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+        /* Intro Screen & Fireworks */
+        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        .intro-pic { width: 180px; height: 180px; border-radius: 50%; border: 5px solid #ff4d6d; object-fit: cover; box-shadow: 0 0 20px rgba(255, 77, 109, 0.5); margin-bottom: 20px; z-index: 10; }
+        .intro-text { font-family: 'Caveat', cursive; font-size: 38px; color: #d6336c; font-weight: bold; z-index: 10; margin-bottom: 30px; text-shadow: 2px 2px 4px rgba(255,255,255,0.8); }
+
+        /* Buttons & Text */
         h1 { font-size: 24px; margin-bottom: 10px; color: #d6336c; }
         .cat-emoji { font-size: 50px; margin-bottom: 20px; animation: bounce 2s infinite; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
         
-        .love-btn { width: 100%; padding: 12px 20px; background: #ff4d6d; color: white; border: none; border-radius: 25px; font-size: 16px; font-family: inherit; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .love-btn:active { transform: scale(0.95); }
+        .love-btn, .next-btn { width: 100%; padding: 12px 20px; background: #ff4d6d; color: white; border: none; border-radius: 25px; font-size: 16px; font-family: inherit; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 15px; font-weight: bold; z-index: 10; }
+        .love-btn:active, .next-btn:active { transform: scale(0.95); }
         
-        .boxes-container { display: flex; justify-content: center; gap: 15px; margin-top: 30px; }
+        /* Boxes Screen */
+        .boxes-container { display: flex; justify-content: center; gap: 15px; margin-top: 30px; z-index: 10; }
         .box { font-size: 60px; cursor: pointer; transition: transform 0.3s; }
         .box:active { transform: scale(0.9); }
         .box-title { font-size: 14px; margin-top: 5px; font-weight: 600; }
 
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); max-width: 350px; width: 100%; margin: 20px 0; }
-        .back-btn { margin-top: 20px; padding: 10px 20px; background: #ff4d6d; color: white; border: none; border-radius: 25px; font-size: 16px; font-family: inherit; margin-bottom: 20px; }
-        
-        .gallery { padding: 15px; }
-        .gallery img { width: 100%; border-radius: 15px; margin-top: 15px; border: 3px solid #ffb3c6; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .caption { font-family: 'Caveat', cursive; font-size: 24px; color: #d6336c; margin-top: 10px; margin-bottom: 25px; line-height: 1.2; }
+        /* Custom Popup Modal */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; }
+        .modal-box { background: white; padding: 25px; border-radius: 20px; border: 3px solid #ff4d6d; width: 80%; max-width: 300px; }
+        .modal-box p { font-size: 18px; color: #d6336c; font-weight: bold; margin-bottom: 15px; }
 
+        /* Inner Screens */
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); max-width: 350px; width: 100%; margin: 20px 0; z-index: 10; }
+        
+        /* Memories Gallery (9:16 Ratio) */
+        .gallery { padding: 15px; }
+        .gallery img { width: 100%; aspect-ratio: 9 / 16; object-fit: cover; border-radius: 15px; margin-top: 15px; border: 3px solid #ffb3c6; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .caption { font-family: 'Caveat', cursive; font-size: 24px; color: #d6336c; margin-top: 10px; margin-bottom: 25px; line-height: 1.2; }
         .letter-text { font-family: 'Caveat', cursive; font-size: 20px; text-align: left; line-height: 1.5; color: #444; }
+
+        /* Proposal Screen */
+        .proposal-pic { width: 150px; height: 150px; object-fit: cover; border-radius: 15px; margin: 20px 0; border: 3px solid #ff4d6d; }
+        .btn-container { display: flex; justify-content: space-around; width: 100%; position: relative; height: 60px; margin-top: 20px; }
+        .yes-btn, .no-btn { padding: 10px 30px; font-size: 18px; border-radius: 25px; border: none; font-weight: bold; color: white; cursor: pointer; }
+        .yes-btn { background: #ff4d6d; }
+        .no-btn { background: #888; position: absolute; transition: top 0.3s, left 0.3s; }
+
+        /* Calendar & Time inputs */
+        input[type="date"], input[type="time"] { width: 100%; padding: 10px; margin: 10px 0; border: 2px solid #ffb3c6; border-radius: 10px; font-family: inherit; font-size: 16px; outline: none; }
+
+        /* End Animation Hearts */
+        .heart-fall { position: fixed; font-size: 30px; color: #ff4d6d; animation: fall linear forwards; z-index: 999; }
+        @keyframes fall { to { transform: translateY(100vh); opacity: 0; } }
     </style>
 </head>
 <body>
 
-    <div id="screen-loading" class="screen active">
+    <!-- Custom Modal -->
+    <div id="customAlert" class="modal-overlay">
+        <div class="modal-box">
+            <p id="alertText">Try again! 🥺</p>
+            <button class="love-btn" onclick="document.getElementById('customAlert').style.display='none'">Okay</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 0: Intro Screen -->
+    <div id="screen-intro" class="screen active">
+        <canvas id="fireworks"></canvas>
+        <img src="mano-intro.webp" alt="Mano Intro" class="intro-pic" onerror="this.src='mano1.jpg'">
+        <div class="intro-text">Happy Birthday My Princess 😘</div>
+        <button class="next-btn" style="max-width: 250px;" onclick="showScreen('screen-loading')">Let's Start ❤️</button>
+    </div>
+
+    <!-- SCREEN 1: Interactive Love Meter -->
+    <div id="screen-loading" class="screen">
         <div class="cat-emoji" id="cat-face">🥺</div>
         <h1>How much do you love me, Mano?</h1>
-        
-        <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px; width: 100%; max-width: 300px;">
+        <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px; width: 100%; max-width: 300px; z-index: 10;">
             <button class="love-btn" onclick="selectLove('10%')">10% - Only that much?</button>
             <button class="love-btn" onclick="selectLove('50%')">50% - Half? Seriously?</button>
             <button class="love-btn" onclick="selectLove('100%')">100% - Getting warmer!</button>
-            <button class="love-btn" style="background: #e60039; font-weight: bold;" onclick="selectLove('1000%')">1000% - Correct Answer! 💖</button>
+            <button class="love-btn" style="background: #e60039;" onclick="selectLove('1000%')">1000% - Correct Answer! 💖</button>
         </div>
     </div>
 
+    <!-- SCREEN 2: Surprise Boxes -->
     <div id="screen-boxes" class="screen">
         <h1>You passed the test! 💖</h1>
         <p>Your surprises are waiting for you...</p>
+        <p style="font-size: 12px; margin-top:10px;">(Click any box to start)</p>
         
         <div class="boxes-container">
-            <div class="box-wrapper" onclick="showScreen('screen-bouquet')">
+            <div class="box-wrapper" onclick="startSequence()">
                 <div class="box">🎁</div>
-                <div class="box-title">Open Me</div>
             </div>
-            <div class="box-wrapper" onclick="showScreen('screen-memories')">
+            <div class="box-wrapper" onclick="startSequence()">
                 <div class="box">🎁</div>
-                <div class="box-title">Our Memories</div>
             </div>
-            <div class="box-wrapper" onclick="showScreen('screen-letter')">
+            <div class="box-wrapper" onclick="startSequence()">
                 <div class="box">🎁</div>
-                <div class="box-title">My Heart</div>
             </div>
         </div>
     </div>
 
+    <!-- SCREEN 3: Bouquet -->
     <div id="screen-bouquet" class="screen">
         <div class="card">
             <h1>💐 For You 💐</h1>
             <p style="margin: 20px 0; font-family: 'Caveat', cursive; font-size: 24px; color: #d6336c;">
                 "You make my heart bloom.<br>Life feels sweeter with you."
             </p>
-            <button class="back-btn" onclick="showScreen('screen-boxes')">Go Back</button>
+            <button class="next-btn" onclick="showScreen('screen-memories')">Next ➡️</button>
         </div>
     </div>
 
+    <!-- SCREEN 4: Memories (Pictures 9:16) -->
     <div id="screen-memories" class="screen">
         <div class="card gallery">
             <h1>Our Beautiful Moments</h1>
-            <p style="margin-bottom: 15px; font-size: 14px;">A quick trip down memory lane ✨</p>
             
-            <img src="mano1.jpg" alt="Mano Pic 1">
+            <img src="mano1.webp" alt="Mano Pic 1">
             <p class="caption">Custom line 1 ❤️</p>
             
-            <img src="mano2.jpg" alt="Mano Pic 2">
+            <img src="mano2.webp" alt="Mano Pic 2">
             <p class="caption">Custom line 2 ✨</p>
 
-            <img src="mano3.jpg" alt="Mano Pic 3">
+            <img src="mano3.webp" alt="Mano Pic 3">
             <p class="caption">Custom line 3 🥰</p>
 
-            <img src="mano4.jpg" alt="Mano Pic 4">
-            <p class="caption">Custom line 4 🌸</p>
+            <!-- Agar aur pictures lagani hon toh yahan code add kar lena jaisa pehle tha -->
 
-            <img src="mano5.jpg" alt="Mano Pic 5">
-            <p class="caption">Custom line 5 💖</p>
-
-            <img src="mano6.jpg" alt="Mano Pic 6">
-            <p class="caption">Custom line 6 🦋</p>
-
-            <img src="mano7.jpg" alt="Mano Pic 7">
-            <p class="caption">Custom line 7 💫</p>
-
-            <img src="mano8.jpg" alt="Mano Pic 8">
-            <p class="caption">Custom line 8 ✨</p>
-
-            <img src="mano9.jpg" alt="Mano Pic 9">
-            <p class="caption">Custom line 9 🌹</p>
-
-            <img src="mano10.jpg" alt="Mano Pic 10">
-            <p class="caption">Happy Birthday! ❤️</p>
-
-            <button class="back-btn" onclick="showScreen('screen-boxes')">Go Back</button>
+            <button class="next-btn" onclick="showScreen('screen-letter')">Next ➡️</button>
         </div>
     </div>
 
+    <!-- SCREEN 5: Letter -->
     <div id="screen-letter" class="screen">
         <div class="card">
             <h1 style="margin-bottom: 15px;">A Letter For You 💌</h1>
             <div class="letter-text">
                 Happy Birthday, Mano! 🎉<br><br>
                 You make my life feel so much more beautiful and meaningful. I just wanted to do something a little different to show you how much you mean to me.<br><br>
-                You make me smile, you make me feel special, and you bring so much happiness into my world. You truly are the most beautiful person in my eyes, inside and out.<br><br>
-                Thank you for being you. Happy Birthday Qurat-ul-Ain, I hope your day is as amazing as you are.<br><br>
+                You truly are the most beautiful person in my eyes, inside and out. Thank you for being you. Happy Birthday Qurat-ul-Ain!<br><br>
                 Always, forever. ❤️
             </div>
-            <button class="back-btn" onclick="showScreen('screen-boxes')">Go Back</button>
+            <button class="next-btn" onclick="showScreen('screen-proposal')">Next ➡️</button>
         </div>
     </div>
 
+    <!-- SCREEN 6: Proposal (Movable NO Button) -->
+    <div id="screen-proposal" class="screen">
+        <div class="card" style="display: flex; flex-direction: column; align-items: center;">
+            <h1 style="font-family: 'Caveat', cursive; font-size: 32px;">Will you spend your golden piece of time with me? ✨</h1>
+            <img src="mano11.webp" alt="Mano Special" class="proposal-pic">
+            
+            <div class="btn-container" id="btn-box">
+                <button class="yes-btn" onclick="showScreen('screen-datetime')">Yes ❤️</button>
+                <button class="no-btn" id="noBtn" onmouseover="moveNo()" ontouchstart="moveNo()">No 🙈</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREEN 7: Calendar / Time Picker -->
+    <div id="screen-datetime" class="screen">
+        <div class="card">
+            <h1>Select Date & Time 🕰️</h1>
+            <p>Yay! I can't wait. Pick a time:</p>
+            <input type="date" id="selectedDate">
+            <input type="time" id="selectedTime">
+            <button class="next-btn" onclick="submitDate()">Confirm Date ❤️</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 8: Final Animation -->
+    <div id="screen-final" class="screen">
+        <h1 style="font-size: 36px; z-index: 10;">It's a Date! 💖</h1>
+        <p style="z-index: 10; font-weight: bold;">See you soon, Princess.</p>
+    </div>
+
+    <!-- JAVASCRIPT -->
     <script>
-        // YAHAN APNA APPS SCRIPT URL PASTE KARNA HAI
-        const scriptURL = 'AKfycbyWdpkrMEtKbdNJvL35BvitTiq661B6o1LkarsRusQ1k2Kt23ptpR_hNDyIS8ZsIePmpA';
+        // === SCRIPT URL HAS BEEN UPDATED HERE ===
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyWdpkrMEtKbdNJvL35BvitTiq661B6o1LkarsRusQ1k2Kt23ptpR_hNDyIS8ZsIePmpA/exec';
 
         function sendNotification(actionDetails) {
             fetch(scriptURL, {
@@ -148,17 +202,23 @@
 
         window.onload = function() {
             sendNotification("Link Opened by Mano");
+            startFireworks();
         };
+
+        // Custom Alert popup function
+        function customAlertPopup(message) {
+            document.getElementById('alertText').innerText = message;
+            document.getElementById('customAlert').style.display = 'flex';
+        }
 
         function selectLove(percentage) {
             sendNotification("Selected: " + percentage);
-            
             if (percentage === "1000%") {
                 document.getElementById('cat-face').innerText = "😻";
                 setTimeout(() => { showScreen('screen-boxes'); }, 500);
             } else {
                 document.getElementById('cat-face').innerText = "😾";
-                alert("Try again! 🥺");
+                customAlertPopup("Try again! You love me way more than that! 🥺");
             }
         }
 
@@ -167,9 +227,107 @@
             screens.forEach(screen => screen.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
             window.scrollTo(0,0);
-            
             sendNotification("Opened Page: " + screenId);
+        }
+
+        // Start Linear Sequence from Boxes
+        function startSequence() {
+            showScreen('screen-bouquet');
+        }
+
+        // Catch me if you can - NO Button logic
+        function moveNo() {
+            let btn = document.getElementById('noBtn');
+            let box = document.getElementById('btn-box');
+            
+            let maxX = box.clientWidth - btn.clientWidth;
+            let maxY = 150; // area to move around
+            
+            let randomX = Math.floor(Math.random() * maxX);
+            let randomY = Math.floor(Math.random() * maxY) - 100; // move up
+            
+            btn.style.left = randomX + 'px';
+            btn.style.top = randomY + 'px';
+        }
+
+        // Submit Date & Time
+        function submitDate() {
+            let d = document.getElementById('selectedDate').value;
+            let t = document.getElementById('selectedTime').value;
+            
+            if(!d || !t) {
+                customAlertPopup("Please select both Date and Time! 🥺");
+                return;
+            }
+            
+            sendNotification("Date Accepted! 🎉 Selected Date: " + d + ", Time: " + t);
+            showScreen('screen-final');
+            startFallingHearts();
+        }
+
+        // End Animation: Falling Hearts
+        function startFallingHearts() {
+            setInterval(() => {
+                let heart = document.createElement("div");
+                heart.innerHTML = "❤️";
+                heart.classList.add("heart-fall");
+                heart.style.left = Math.random() * 100 + "vw";
+                heart.style.top = "-50px";
+                heart.style.animationDuration = (Math.random() * 2 + 2) + "s";
+                document.body.appendChild(heart);
+                setTimeout(() => { heart.remove(); }, 4000);
+            }, 300);
+        }
+
+        // Intro Animation: Canvas Fireworks
+        function startFireworks() {
+            const canvas = document.getElementById('fireworks');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            let particles = [];
+            
+            function createFirework() {
+                let x = Math.random() * canvas.width;
+                let y = canvas.height;
+                let color = `hsl(${Math.random() * 60 + 330}, 100%, 60%)`; // Pink/Red tones
+                for (let i = 0; i < 30; i++) {
+                    particles.push({
+                        x: x, y: y,
+                        vx: (Math.random() - 0.5) * 5,
+                        vy: Math.random() * -8 - 5,
+                        life: Math.random() * 40 + 40,
+                        color: color, size: Math.random() * 3 + 1
+                    });
+                }
+            }
+
+            function animate() {
+                ctx.fillStyle = 'rgba(255, 230, 234, 0.2)'; // Fades out old frames for trails
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                for (let i = 0; i < particles.length; i++) {
+                    let p = particles[i];
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.fill();
+                    
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.1; // gravity
+                    p.life--;
+                    
+                    if (p.life <= 0) particles.splice(i, 1);
+                }
+                
+                if (Math.random() < 0.05) createFirework();
+                requestAnimationFrame(animate);
+            }
+            animate();
         }
     </script>
 </body>
 </html>
+
